@@ -1,0 +1,36 @@
+body {
+    background: url('../images/1fon.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+button[type="button"]{
+
+    position: absolute;
+    left: 300px;
+    background: rgba(0,0,0,0.2);
+    width: 800px;
+    color: #FFF;
+    height: 300px;
+
+    font-family: sans-serif;
+
+    font-size: 60px;
+    cursor: pointer;
+}
+button[type="submit"]{
+
+    position: absolute;
+    left: 20px;
+    background: rgba(0,0,0,0.2);
+    width: 150px;
+    color: #FFF;
+    height: 60px;
+
+    font-family: sans-serif;
+
+    font-size: 20px;
+    cursor: pointer;
+}
