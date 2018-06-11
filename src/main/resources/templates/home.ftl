@@ -9,21 +9,21 @@
 			<tr>
 			<td>
 				<form>	
-					<button type="button">������� ���� ����</button>
+					<button type="button">??????? ???? ????</button>
 				</form>
 				<br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
                			 <form>
-					<button type="button">������� ������</button>
+					<button type="button">??????? ??????</button>
 				</form>
 			</td><td></td>
 			<td> 
 				<br></br><br></br><br></br><br></br><br></br>
 				<form>
-					<button type="submit">������ �������</button>
+					<button type="submit">?????? ???????</button>
 				</form>
 				<br></br><br></br><br></br>
 				<form>
-					<button type="submit">����� �� �������</button>	
+					<button type="submit">????? ?? ???????</button>	
 				</form>
 			</td>
 			</tr>

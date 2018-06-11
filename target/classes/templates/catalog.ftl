@@ -16,7 +16,7 @@
 				</form>
 			</td>
 			<td>
-				<form name="resulttest"><td> <th>������� ������</th>  </td></form>
+				<form question="resulttest"><td> <th>������� ������</th>  </td></form>
 			</td>
 			</tr>
 		</table>

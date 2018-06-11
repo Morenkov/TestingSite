@@ -15,11 +15,35 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotBlank(message = "Username cannot be empty")
+    @NotBlank(message = "Логин не может быть пустым")
     private String username;
-    @NotBlank(message = "Password cannot be empty")
+    @NotBlank(message = "Пароль не может быть пустым")
     private String password;
     private boolean active;
+
+
+    @NotBlank(message = "Имя не может отсутствовать")
+    private String firstName;
+    @NotBlank(message = "Фамилия не может отсутствовать")
+    private String lastName;
+    @NotBlank(message = "Отчество не может отсутствовать")
+    private String thirdName;
+
+
+//    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @CollectionTable(name = "city", joinColumns = @JoinColumn(name = "user_id"))
+//    private City city;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<City> city;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Country> country;
+
+//    @ElementCollection(targetClass = Country.class, fetch = FetchType.EAGER)
+//    @CollectionTable(name = "county", joinColumns = @JoinColumn(name = "user_id"))
+//    private Country country;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -27,7 +51,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Message> messages;
+    private Set<Test> tests;
 
     @Override
     public boolean equals(Object o) {
@@ -108,11 +132,51 @@ public class User implements UserDetails {
     }
 
 
-    public Set<Message> getMessages() {
-        return messages;
+    public Set<Test> getTests() {
+        return tests;
     }
 
-    public void setMessages(Set<Message> messages) {
-        this.messages = messages;
+    public void setTests(Set<Test> tests) {
+        this.tests = tests;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getThirdName() {
+        return thirdName;
+    }
+
+    public void setThirdName(String thirdName) {
+        this.thirdName = thirdName;
+    }
+
+    public Set<Country> getCountry() {
+        return country;
+    }
+
+    public void setCountry(Set<Country> country) {
+        this.country = country;
+    }
+
+    public Set<City> getCity() {
+        return city;
+    }
+
+    public void setCity(Set<City> city) {
+        this.city = city;
     }
 }
