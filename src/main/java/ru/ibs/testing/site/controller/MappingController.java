@@ -32,7 +32,7 @@ public class MappingController {
 
     @PostMapping("/")
     public String home() {
-        return "home";
+        return "profile";
     }
 
 
@@ -71,9 +71,9 @@ public class MappingController {
             Model model,
             @RequestParam(required = false) Test test
     ) {
-        Set<Test> messages = user.getTests();
+        Set<Test> tests = user.getTests();
 
-        model.addAttribute("messages", messages);
+        model.addAttribute("messages", tests);
         model.addAttribute("test", test);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
 

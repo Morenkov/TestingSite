@@ -30,28 +30,23 @@ public class User implements UserDetails {
     private String thirdName;
 
 
-//    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @CollectionTable(name = "city", joinColumns = @JoinColumn(name = "user_id"))
-//    private City city;
-
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<City> city;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Country> country;
 
-//    @ElementCollection(targetClass = Country.class, fetch = FetchType.EAGER)
-//    @CollectionTable(name = "county", joinColumns = @JoinColumn(name = "user_id"))
-//    private Country country;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Result> results;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Test> tests;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Test> tests;
 
     @Override
     public boolean equals(Object o) {
@@ -178,5 +173,13 @@ public class User implements UserDetails {
 
     public void setCity(Set<City> city) {
         this.city = city;
+    }
+
+    public Set<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(Set<Result> results) {
+        this.results = results;
     }
 }

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 public class Country {
 
     public Country(){
-
     }
 
     @Id

@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Entity
 public class Question {
@@ -20,6 +21,8 @@ public class Question {
     @JoinColumn(name = "test_id")
     private Test test;
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Answer> answers;
 
     public Question() {
     }
@@ -57,4 +60,11 @@ public class Question {
         this.id = id;
     }
 
+    public Set<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(Set<Answer> answers) {
+        this.answers = answers;
+    }
 }
