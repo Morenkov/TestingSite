@@ -12,7 +12,6 @@ import ru.ibs.testing.site.service.UserSevice;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserSevice userSevice;
@@ -28,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
-                    .loginPage("/index")
+                    .loginPage("/login")
                     .permitAll()
                 .and()
                     .rememberMe()

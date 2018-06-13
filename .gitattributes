@@ -1,2 +1,2 @@
-# Auto detect question files and perform LF normalization
-* question=auto
+# Auto detect name files and perform LF normalization
+* name=auto

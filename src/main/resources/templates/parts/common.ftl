@@ -1,4 +1,4 @@
-<#macro page style>
+<#macro page>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +6,12 @@
     <title>TestSyst</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link type="text/css" href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link type="text/css" href="/static/css/${style}.css" rel="stylesheet">
     <link type="text/css" href="/static/css/main.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
+    <#include "navbar.ftl">
+
+<div class="container mt-1">
 <#nested>
 </div>
 <!-- Optional JavaScript -->

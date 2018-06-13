@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component question="CompilerConfiguration">
+  <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile question="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir question="target/generated-sources/annotations" />
-        <sourceTestOutputDir question="target/generated-test-sources/test-annotations" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module question="TestingSite" />
+        <module name="TestingSite" />
       </profile>
     </annotationProcessing>
   </component>

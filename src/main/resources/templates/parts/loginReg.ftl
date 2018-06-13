@@ -1,4 +1,7 @@
 <#macro login path isRegisterForm>
+
+    <div><#if currentUser?? && !isRegisterForm>${currentUser.username}</#if></div>
+
 <form action="${path}" method="post">
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">User Name :</label>
@@ -82,5 +85,12 @@
     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <#if !isRegisterForm><a href="/registration">Регистрация</a></#if>
     <button class="btn btn-primary" type="submit"><#if isRegisterForm>Регистрация<#else>Войти</#if></button>
+</form>
+</#macro>
+
+<#macro logout>
+<form action="/logout" method="post">
+    <input type="hidden" name="_csrf" value="${_csrf.token}" />
+    <button class="btn btn-primary" type="submit">Выйти</button>
 </form>
 </#macro>

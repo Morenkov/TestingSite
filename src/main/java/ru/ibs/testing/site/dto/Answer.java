@@ -47,4 +47,12 @@ public class Answer {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
 }

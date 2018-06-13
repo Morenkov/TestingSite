@@ -13,7 +13,7 @@ public class Test {
     private Long id;
 
     @NotBlank(message = "Please fill the name")
-    @Length(max = 32, message = "Test name too long (more than 32)")
+    @Length(max = 128, message = "Test name too long (more than 128)")
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -60,4 +60,11 @@ public class Test {
         this.id = id;
     }
 
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
 }

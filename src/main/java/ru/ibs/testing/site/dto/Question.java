@@ -12,9 +12,9 @@ public class Question {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    @NotBlank(message = "Please fill the question")
-    @Length(max = 32, message = "Test question too long (more than 32)")
-    private String question;
+    @NotBlank(message = "Please fill the name")
+    @Length(max = 32, message = "Test name too long (more than 32)")
+    private String name;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -27,9 +27,9 @@ public class Question {
     public Question() {
     }
 
-    public Question(String question, Test test) {
+    public Question(String name, Test test) {
         this.test = test;
-        this.question = question;
+        this.name = name;
     }
 
     public String getTestName() {
@@ -44,12 +44,12 @@ public class Question {
         this.test = test;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getName() {
+        return name;
     }
 
     public Long getId() {
