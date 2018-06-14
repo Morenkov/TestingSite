@@ -43,34 +43,39 @@ public class MappingController {
         return "main";
     }
 
-//    @PostMapping("/main")
-//    public String add(
-//            @AuthenticationPrincipal User currentUser,
-//            Test test,
-//            BindingResult bindingResult,
-//            Model model
-//    ) throws IOException {
-//        test.setAuthor(currentUser);
-//
-//        if (bindingResult.hasErrors()) {
-//            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-//
-//            model.mergeAttributes(errorsMap);
-//            model.addAttribute("message", test);
-//        } else {
-//
-//            model.addAttribute("message", null);
-//
-//        }
-//        testRepo.save(test);
-//        Iterable<Test> tests = testRepo.findAll();
-//
-//        model.addAttribute("tests", tests);
-//        model.addAttribute("currentUser", currentUser);
-//
-//        return "main";
-//    }
+    @GetMapping("/profile")
+    public String profile(
+            @AuthenticationPrincipal User currentUser,
+            Map<String, Object> model
+    ) {
+        currentUser = userRepo.findByUsername(currentUser.getUsername());
+        Set<Result> results = currentUser.getResults();
 
+        model.put("results", results);
+        model.put("currentUser", currentUser);
+
+        return "profileResult";
+    }
+
+    @GetMapping("/result/{testID}")
+    public String userResult(
+            @PathVariable Long testID,
+            @AuthenticationPrincipal User currentUser,
+            Map<String, Object> model
+    ) {
+        Test test = getTestFromRepo(testID);
+        currentUser = userRepo.findByUsername(currentUser.getUsername());
+        Set<Result> res = currentUser.getResults();
+
+        for (Result result : res) {
+            if (result.getTest().getId().equals(test.getId())) {
+                model.put("result", result);
+            }
+        }
+        model.put("test", test);
+        model.put("currentUser", currentUser);
+        return "result";
+    }
     @GetMapping("/test/{testID}")
     public String startTest(
             @PathVariable Long testID,
@@ -87,6 +92,7 @@ public class MappingController {
         return "test";
     }
 
+
     @PostMapping("/test/{testID}")
     public String finishTest(
             @AuthenticationPrincipal User currentUser,
@@ -97,27 +103,6 @@ public class MappingController {
         checkAnswers(currentUser, form, test);
 
         return "redirect:/result/" + testID;
-    }
-
-    @GetMapping("/result/{testID}")
-    public String userResult(
-            @PathVariable Long testID,
-            @AuthenticationPrincipal User currentUser,
-            Map<String, Object> model
-    ) {
-        Test test = getTestFromRepo(testID);
-        currentUser = userRepo.findByUsername(currentUser.getUsername());
-        Set<Result> res = currentUser.getResults();
-
-        for (Result result : res) {
-            if (result.getTest().getId().equals(test.getId())) {
-                System.out.println("YEP");
-                model.put("result", result);
-            }
-        }
-        model.put("test", test);
-        model.put("currentUser", currentUser);
-        return "result";
     }
 
 
@@ -260,7 +245,7 @@ public class MappingController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd/HH.mm.ss");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        test.setName("Тест пользователя " + currentUser.getUsername() + " создан: " + sdf.format(timestamp));
+        test.setName("Тест пользователя " + currentUser.getUsername() + " От: " + sdf.format(timestamp));
 
         Set<Question> questions = new HashSet<>();
 

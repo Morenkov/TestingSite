@@ -11,12 +11,15 @@
     <li class="nav-item">
         <a class="nav-link" href="/makeTest/0">Создать тест</a>
     </li>
+<#if currentUser??>
     <li class="nav-item">
-        <a class="nav-link">
+        <a class="nav-link" href="/profile">
             Текущий пользователь: <#if currentUser??>${currentUser.username} <#else>Гость</#if>
         </a>
     </li>
-<#if currentUser??>
+    <li class="nav-item active">
+        <a class="nav-link" href="/profile">Профиль</a>
+    </li>
     <li class="nav-item">
         <div class="nav-link disabled">
         <@l.logout />
