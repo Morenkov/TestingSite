@@ -51,6 +51,7 @@ public class MappingController {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     @GetMapping("/profile")
     public String profile(
             @AuthenticationPrincipal User currentUser,
@@ -112,6 +113,35 @@ public class MappingController {
 
         return "main";
 >>>>>>> parent of 15adf41... 4
+=======
+    @PostMapping("/main")
+    public String add(
+            @AuthenticationPrincipal User currentUser,
+            Test test,
+            BindingResult bindingResult,
+            Model model
+    ) throws IOException {
+        test.setAuthor(currentUser);
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+
+            model.mergeAttributes(errorsMap);
+            model.addAttribute("message", test);
+        } else {
+
+            model.addAttribute("message", null);
+
+            testRepo.save(test);
+        }
+
+        Iterable<Test> tests = testRepo.findAll();
+
+        model.addAttribute("tests", tests);
+        model.addAttribute("currentUser", currentUser);
+
+        return "main";
+>>>>>>> parent of 15adf41... 4
     }
     @GetMapping("/test/{testID}")
     public String startTest(
@@ -141,6 +171,7 @@ public class MappingController {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     @PostMapping("/test/{testID}")
     public String finishTest(
@@ -164,6 +195,9 @@ public class MappingController {
         return "main";
     }
 
+    @GetMapping("/user-tests/{testID}")
+>>>>>>> parent of 15adf41... 4
+=======
     @GetMapping("/user-tests/{testID}")
 >>>>>>> parent of 15adf41... 4
 =======
@@ -272,7 +306,11 @@ public class MappingController {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         test.setName("Тест пользователя " + currentUser.getUsername() + " От: " + sdf.format(timestamp));
+=======
+        System.out.println(form.keySet());
+>>>>>>> parent of 15adf41... 4
 =======
         System.out.println(form.keySet());
 >>>>>>> parent of 15adf41... 4
