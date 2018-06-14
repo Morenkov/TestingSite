@@ -1,28 +1,27 @@
 <#import "loginReg.ftl" as l>
 
 
-<ul class="nav nav-pills">
+<ul class="nav nav-pills mt-3">
     <li class="nav-item">
-        <a class="nav-link active" href="/">Test System</a>
+        <a class="nav-link active" href="/">TestSyst</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="/main">Тесты</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/user-tests/0">Создать тест</a>
+        <a class="nav-link" href="/makeTest/0">Создать тест</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/login">Вход</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-tabs">
-            Сейчас вы: <#if currentUser??>${currentUser.username} <#else>Гость(Неопознанная Панда)</#if>
+        <a class="nav-link">
+            Текущий пользователь: <#if currentUser??>${currentUser.username} <#else>Гость</#if>
         </a>
     </li>
+<#if currentUser??>
     <li class="nav-item">
         <div class="nav-link disabled">
         <@l.logout />
         </div>
     </li>
+</#if>
 </ul>
 

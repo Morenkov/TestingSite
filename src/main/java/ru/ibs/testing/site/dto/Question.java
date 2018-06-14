@@ -16,12 +16,11 @@ public class Question {
     @Length(max = 32, message = "Test name too long (more than 32)")
     private String name;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "test_id")
     private Test test;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Answer> answers;
 
     public Question() {

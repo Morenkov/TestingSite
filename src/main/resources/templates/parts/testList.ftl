@@ -1,15 +1,16 @@
-<div class="card-columns">
+<div class="card-columns mt-4">
     <#list tests as test>
-        <div class="card my-3 border-dark" style="width: 36rem;">
-            <div class="card-body m-2">
-                <h5 class="card-title">${test.name}</h5>
-                <i class="card-text">Создал: ${test.author.username}</i>
-            </div>
-            <div class="card-footer text-muted">
-                <a href="/user-tests/${test.id}" class="btn btn-primary">Начать</a>
-            </div>
-        </div>
 
+        <div class="card p-3 border-dark">
+            <blockquote class="blockquote mb-0 card-body">
+                <p>${test.name}</p>
+                <i class="card-text"><span class="h6">Добавл/изменил:</span> ${test.author.username}</i>
+                <footer class="footer">
+                    <a href="/test/${test.id}" class="btn btn-primary">Начать</a>
+                    <a href="/makeTest/${test.id}" class="btn btn-primary">Редактировать</a>
+                </footer>
+            </blockquote>
+        </div>
     <#else>
         No tests
     </#list>
