@@ -20,7 +20,7 @@ public class Test {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Question> questions;
 
 
