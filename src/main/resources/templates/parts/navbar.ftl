@@ -11,8 +11,8 @@
     <li class="nav-item">
         <a class="nav-link" href="/user-tests/0">Создать тест</a>
     </li>
-<#if currentUser??>
     <li class="nav-item">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -50,6 +50,13 @@
         </a>
     </li>
 >>>>>>> parent of 15adf41... 4
+=======
+        <a class="nav-link">
+            Текущий пользователь: <#if currentUser??>${currentUser.username} <#else>Гость</#if>
+        </a>
+    </li>
+<#if currentUser??>
+>>>>>>> parent of f1c1ae5... 5
     <li class="nav-item">
         <div class="nav-link disabled">
         <@l.logout />

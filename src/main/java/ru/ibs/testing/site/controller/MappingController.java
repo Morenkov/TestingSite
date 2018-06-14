@@ -52,6 +52,7 @@ public class MappingController {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     @GetMapping("/profile")
     public String profile(
             @AuthenticationPrincipal User currentUser,
@@ -143,6 +144,36 @@ public class MappingController {
         return "main";
 >>>>>>> parent of 15adf41... 4
     }
+=======
+//    @PostMapping("/main")
+//    public String add(
+//            @AuthenticationPrincipal User currentUser,
+//            Test test,
+//            BindingResult bindingResult,
+//            Model model
+//    ) throws IOException {
+//        test.setAuthor(currentUser);
+//
+//        if (bindingResult.hasErrors()) {
+//            Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+//
+//            model.mergeAttributes(errorsMap);
+//            model.addAttribute("message", test);
+//        } else {
+//
+//            model.addAttribute("message", null);
+//
+//        }
+//        testRepo.save(test);
+//        Iterable<Test> tests = testRepo.findAll();
+//
+//        model.addAttribute("tests", tests);
+//        model.addAttribute("currentUser", currentUser);
+//
+//        return "main";
+//    }
+
+>>>>>>> parent of f1c1ae5... 5
     @GetMapping("/test/{testID}")
     public String startTest(
             @PathVariable Long testID,
@@ -172,7 +203,10 @@ public class MappingController {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of f1c1ae5... 5
     @PostMapping("/test/{testID}")
     public String finishTest(
             @AuthenticationPrincipal User currentUser,
@@ -189,6 +223,30 @@ public class MappingController {
         model.addAttribute("currentUser", currentUser);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    @GetMapping("/result/{testID}")
+    public String userResult(
+            @PathVariable Long testID,
+            @AuthenticationPrincipal User currentUser,
+            Map<String, Object> model
+    ) {
+        Test test = getTestFromRepo(testID);
+        currentUser = userRepo.findByUsername(currentUser.getUsername());
+        Set<Result> res = currentUser.getResults();
+
+        for (Result result : res) {
+            if (result.getTest().getId().equals(test.getId())) {
+                System.out.println("YEP");
+                model.put("result", result);
+            }
+        }
+        model.put("test", test);
+        model.put("currentUser", currentUser);
+        return "result";
+    }
+
+>>>>>>> parent of f1c1ae5... 5
 
     @RequestMapping(value = "/makeTest/{testID}", method = RequestMethod.GET)
 =======
@@ -307,6 +365,7 @@ public class MappingController {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         test.setName("Тест пользователя " + currentUser.getUsername() + " От: " + sdf.format(timestamp));
 =======
         System.out.println(form.keySet());
@@ -317,6 +376,9 @@ public class MappingController {
 =======
         System.out.println(form.keySet());
 >>>>>>> parent of 15adf41... 4
+=======
+        test.setName("Тест пользователя " + currentUser.getUsername() + " создан: " + sdf.format(timestamp));
+>>>>>>> parent of f1c1ae5... 5
 
         testRepo.save(test);
         return "redirect:/user-tests/" + testID;
