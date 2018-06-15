@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -29,17 +30,18 @@ public class User implements UserDetails {
     @NotBlank(message = "Отчество не может отсутствовать")
     private String thirdName;
 
+    @NotNull(message = "город не может быть null")
+    private String city;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<City> city;
+    @NotNull(message = "страна не может быть null")
+    private String country;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Country> country;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
     private Set<Result> results;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Test> tests;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -159,21 +161,6 @@ public class User implements UserDetails {
         this.thirdName = thirdName;
     }
 
-    public Set<Country> getCountry() {
-        return country;
-    }
-
-    public void setCountry(Set<Country> country) {
-        this.country = country;
-    }
-
-    public Set<City> getCity() {
-        return city;
-    }
-
-    public void setCity(Set<City> city) {
-        this.city = city;
-    }
 
     public Set<Result> getResults() {
         return results;
@@ -181,5 +168,21 @@ public class User implements UserDetails {
 
     public void setResults(Set<Result> results) {
         this.results = results;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

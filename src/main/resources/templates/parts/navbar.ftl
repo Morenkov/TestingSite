@@ -9,7 +9,7 @@
         <a class="nav-link" href="/main">Тесты</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/makeTest/0">Создать тест</a>
+        <a class="nav-link" href="/setSizes">Создать тест</a>
     </li>
 <#if currentUser??>
     <li class="nav-item">

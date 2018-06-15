@@ -4,11 +4,12 @@
         <div class="card p-3 border-dark">
             <blockquote class="blockquote mb-0 card-body">
                 <p>${test.name}</p>
-                <i class="card-text"><span class="h6">Добавл/изменил:</span> ${test.author.username}</i>
+                <i class="card-text"><span class="h6">Вопросов: ${test.questions?size}, Ответов: ${test.questions[0].answers?size}</span></i>
                 <footer class="footer">
                     <a href="/test/${test.id}" class="btn btn-primary">Начать</a>
-                    <a href="/makeTest/${test.id}" class="btn btn-primary">Редактировать</a>
+                    <a href="/makeTest/${test.id}/edit/none/go" class="btn btn-primary">Редактировать</a>
                 </footer>
+                <i class="card-text"><span class="h6">Добавл/изменил:</span> ${test.author.username}</i>
             </blockquote>
         </div>
     <#else>

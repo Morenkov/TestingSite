@@ -10,7 +10,7 @@
 <#list results as result>
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Результат прохождения теста: <i>${result.test.name}</i></h5>
+        <h5 class="card-title">Результат прохождения теста: <i class="text-primary"><a href="/test/${result.test.id}">${result.test.name}</a></i></h5>
         <p class="card-text">${result.points} баллов.</p>
     </div>
 </div>

@@ -35,11 +35,12 @@
             <div class="col-sm-6">
                 <input type="password" name="password2"
                        class="form-control ${(password2Error??)?string('is-invalid', '')}"
-                       placeholder="Retype password"/><#if password2Error??>
+                       placeholder="Retype password"/>
+                <#if password2Error??>
                     <div class="invalid-feedback">
                         ${password2Error}
                     </div>
-            </#if>
+                </#if>
             </div>
         </div>
         <div class="form-group row">
@@ -81,6 +82,32 @@
             </#if>
             </div>
         </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Страна :</label>
+                <div class="col-sm-6">
+                    <input type="text" name="country" value="<#if user??>${user.country}</#if>"
+                           class="form-control ${(countryError??)?string('is-invalid', '')}"
+                           placeholder="название страны"/>
+            <#if countryError??>
+                <div class="invalid-feedback">
+                    ${countryError}
+                </div>
+            </#if>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Город :</label>
+                <div class="col-sm-6">
+                    <input type="text" name="city" value="<#if user??>${user.city}</#if>"
+                           class="form-control ${(cityError??)?string('is-invalid', '')}"
+                           placeholder="Город"/>
+            <#if cityError??>
+                <div class="invalid-feedback">
+                    ${cityError}
+                </div>
+            </#if>
+                </div>
+            </div>
     </#if>
     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <#if !isRegisterForm><a href="/registration">Регистрация</a></#if>
@@ -90,7 +117,7 @@
 
 <#macro logout>
 <form action="/logout" method="post">
-    <input type="hidden" name="_csrf" value="${_csrf.token}" />
+    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <button class="btn btn-primary" type="submit">Выйти</button>
 </form>
 </#macro>

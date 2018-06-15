@@ -1,6 +1,8 @@
 <#macro testRender path isEditForm>
  <div class="form-group">
 
+     <div class="label"><#if errors!="none">${errors}</#if></div>
+
      <form action="${path}" method="post" enctype="multipart/form-data">
 
          <div class="input-group mb-3">
@@ -11,11 +13,6 @@
                     </div>
                     <input type="text" class="form-control"
                             value="<#if test??>${test.name}" name="t-${test.id}</#if>" placeholder="Введите имя теста">
-                    <#if textError??>
-                        <div class="invalid-feedback">
-                            ${nameError}
-                        </div>
-                    </#if>
                 <#else>
                 <h3>Тест № ${test.id} - ${test.name}"</h3>
                 </#if>
@@ -41,7 +38,7 @@
             <#if isEditForm>
             <input type="text" class="form-control border border-primary"
                    value="${answer.name}" name="a-${answer.id}"
-                   placeholder="Введите ответ ${answer.points} - ${answer}"/>
+                   placeholder="Введите ответ"/>
             <select name="p-${answer.id}" class="selectpicker mt-1">
                 <option value="0" <#if answer.points == 0>selected</#if>>0</option>
                 <option value="1" <#if answer.points == 1>selected</#if>>1</option>

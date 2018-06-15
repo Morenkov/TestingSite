@@ -8,5 +8,6 @@ import java.util.List;
 public interface TestRepo extends CrudRepository<Test, Long> {
 
     List<Test> findByName(String name);
+    Test findById(int name);
 
 }

@@ -9,18 +9,20 @@ import java.util.Set;
 @Entity
 public class Test {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotBlank(message = "Please fill the name")
     @Length(max = 128, message = "Test name too long (more than 128)")
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "test",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private Set<Question> questions;
 
 

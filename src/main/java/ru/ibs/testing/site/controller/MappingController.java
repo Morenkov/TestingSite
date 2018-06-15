@@ -1,13 +1,22 @@
 package ru.ibs.testing.site.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.beans.binding.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.TextEscapeUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.HtmlUtils;
 import ru.ibs.testing.site.dto.*;
 import ru.ibs.testing.site.repos.TestRepo;
 import ru.ibs.testing.site.repos.UserRepo;
+import ru.ibs.testing.site.service.UserSevice;
 
+import javax.validation.*;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -19,6 +28,8 @@ public class MappingController {
     private TestRepo testRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/")
     public String greeting(
@@ -56,13 +67,51 @@ public class MappingController {
             @AuthenticationPrincipal User currentUser,
             Map<String, Object> model
     ) {
-        currentUser = userRepo.findByUsername(currentUser.getUsername());
-        Set<Result> results = currentUser.getResults();
+        User updateduser = userRepo.findByUsername(currentUser.getUsername());
+        Set<Result> results = updateduser.getResults();
 
         model.put("results", results);
-        model.put("currentUser", currentUser);
+        model.put("user", updateduser);
 
         return "profileResult";
+    }
+
+    @PostMapping("/profile")
+    public String profile(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam Map<String, String> form,
+            @RequestParam("userId") User user
+    ) {
+        Boolean flag = false;
+        currentUser = userRepo.findByUsername(currentUser.getUsername());
+        if (!form.get("firstName").equals("")) {
+            user.setFirstName(form.get("firstName"));
+            flag = true;
+        }
+        if (!form.get("lastName").equals("")) {
+            user.setLastName(HtmlUtils.htmlEscape(form.get("lastName")));
+            flag = true;
+        }
+        if (!form.get("thirdName").equals("")) {
+            user.setThirdName(HtmlUtils.htmlEscape(form.get("thirdName")));
+            flag = true;
+        }
+        if (!form.get("password").equals("")) {
+            user.setPassword(passwordEncoder.encode(HtmlUtils.htmlEscape(form.get("password"))));
+            flag = true;
+        }
+        if (!form.get("country").equals(user.getCountry())) {
+            user.setCountry(HtmlUtils.htmlEscape(form.get("country")));
+            flag = true;
+        }
+        if (!form.get("city").equals(user.getCity())) {
+            user.setCity(HtmlUtils.htmlEscape(form.get("city")));
+            flag = true;
+        }
+        if (flag) {
+            userRepo.save(user);
+        }
+        return "redirect:/profile";
     }
 
     @GetMapping("/result/{testID}")
@@ -84,6 +133,7 @@ public class MappingController {
         model.put("currentUser", currentUser);
         return "result";
     }
+
     @GetMapping("/test/{testID}")
     public String startTest(
             @PathVariable Long testID,
@@ -114,14 +164,15 @@ public class MappingController {
     }
 
 
-    @RequestMapping(value = "/makeTest/{testID}", method = RequestMethod.GET)
+    @GetMapping("/makeTest/{testID}/edit/{errors}/go")
     public String userTests(
+            @RequestParam(required = false) Integer q,
+            @RequestParam(required = false) Integer a,
+            @PathVariable String errors,
             @PathVariable Long testID,
             @AuthenticationPrincipal User currentUser,
             Map<String, Object> model
     ) {
-        int q = 5;
-        int a = 5;
         Test test;
         if (testID == 0) {
             test = getNewTest(currentUser, q, a);
@@ -130,27 +181,102 @@ public class MappingController {
         } else {
             test = getTestFromRepo(testID);
         }
+        if (!errors.equals("none")){
+            model.put("errors", errors);
+        }
         model.put("test", test);
         model.put("currentUser", currentUser);
         return "testEdit";
     }
 
-    @PostMapping("/makeTest/{testID}")
+    @ExceptionHandler({TransactionSystemException.class})
+    @PostMapping("/makeTest/{testID}/edit/{errors}/go")
     public String updateTests(
             @AuthenticationPrincipal User currentUser,
+            @PathVariable String errors,
             @PathVariable Long testID,
-            @RequestParam Map<String, String> form,
-            @RequestParam("id") Test test
+            @RequestParam Map<String, String> form
     ) {
-        fillTestFromForm(currentUser, form, test, 5, 5);
+        for (String key : form.keySet()
+                ) {
+            form.put(key, HtmlUtils.htmlEscape(form.get(key)));
+        }
+        Test test = testRepo.findById(testID).get();
+        Integer qNumber = test.getQuestions().size();
 
-        testRepo.save(test);
+        Question[] ans = test.getQuestions().toArray(new Question[0]);
+        Integer aNumber = ans[0].getAnswers().size();
 
-        return "redirect:/main";
+        fillTestFromForm(currentUser, form, test, qNumber, aNumber);
+        Boolean flag = false;
+        if (test.getName().equals("")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd/HH.mm.ss");
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+            test.setName("Тест пользователя " + currentUser.getUsername() + " От: " + sdf.format(timestamp));
+            flag = true;
+        }
+        for (Question q : test.getQuestions()
+                ) {
+            for (Answer a : q.getAnswers()
+                    ) {
+                if (a.getName().equals("")) {
+                    a.setName("[пусто]");
+                    flag = true;
+                }
+                if (flag) {
+                    break;
+                }
+            }
+            if (q.getName().equals("")) {
+                q.setName("[пусто]");
+                flag = true;
+            }
+            if (flag) {
+                break;
+            }
+        }
+
+        if (!flag) {
+            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+            Validator validator = factory.getValidator();
+
+            Set<ConstraintViolation<Test>> constraintViolations = validator.validate(test);
+            errors = "";
+            if (constraintViolations.size() > 0) {
+                System.out.println("Constraint Violations occurred..");
+                errors += "Constraint Violations occurred..\n";
+//                for (ConstraintViolation<Test> contraints : constraintViolations) {
+//                    System.out.println(contraints.getRootBeanClass().getSimpleName() +
+//                            "." + contraints.getPropertyPath() + " " + contraints.getMessage());
+//                    errors += contraints.getRootBeanClass().getSimpleName() +
+//                            "." + contraints.getPropertyPath() + " " + contraints.getMessage() + "\n";
+//                }
+//                if (errors.equals("")) {
+                    errors = "Empty_fields_or_too_long_text";
+//                }
+                test = null;
+                return "redirect:/makeTest/" + testID + "/edit/" + errors + "/go";
+            } else {
+                testRepo.save(test);
+            }
+        }
+        return "redirect:/makeTest/" + testID + "/edit/none/go";
+
     }
 
+    public static RedirectView safeRedirect(String url) {
+        RedirectView rv = new RedirectView(url);
+        rv.setExposeModelAttributes(false);
+        return rv;
+    }
 
     private void fillTestFromForm(User currentUser, Map<String, String> form, Test test, int qNumber, int aNumber) {
+
+        for (String key : form.keySet()
+                ) {
+            form.put(key, HtmlUtils.htmlEscape(form.get(key)));
+        }
 
         test.setAuthor(currentUser);
         test.setName(form.get("t-" + test.getId()));
@@ -158,7 +284,7 @@ public class MappingController {
         Set<Question> questions = new HashSet<>();
         for (int i = 0; i < qNumber; i++) {
             Question q = new Question();
-            long questionNumber = test.getId() + 1 + (i * 6);
+            long questionNumber = test.getId() + 1 + (i * (1 + aNumber));
 
             q.setName(form.get("q-" + questionNumber));
             q.setId(questionNumber);
@@ -168,7 +294,7 @@ public class MappingController {
 
             for (int ii = 0; ii < aNumber; ii++) {
                 Answer a = new Answer();
-                long answerNumber = test.getId() + 2 + (i * 6) + (ii * 1);
+                long answerNumber = test.getId() + 2 + (i * (1 + aNumber) + ii);
                 a.setId(answerNumber);
                 a.setName(
                         form.get("a-" + answerNumber));
@@ -187,19 +313,20 @@ public class MappingController {
 
     private void checkAnswers(User currentUser, Map<String, String> form, Test test) {
         int score = 0;
-
+        for (String key : form.keySet()
+                ) {
+            form.put(key, HtmlUtils.htmlEscape(form.get(key)));
+        }
         Question[] questions = test.getQuestions().toArray(new Question[0]);
         for (int i = 0; i < questions.length; i++) {
             String answer = form.get("q-" + questions[i].getId());
 
             Answer[] answers = questions[i].getAnswers().toArray(new Answer[0]);
 
-            for (Answer answer1 : answers) {
-                System.out.println(answer);
-                System.out.println(answer1.getName());
-                if (answer.equals(answer1.getName())) {
-                    System.out.println("GOTIT + " + answers[i].getPoints());
-                    score += answers[i].getPoints();
+            for (int ii = 0; ii < answers.length; ii++) {
+                System.out.println(answers[ii].getName());
+                if (answers[ii].getName().equals(answer)) {
+                    score += answers[ii].getPoints();
                 }
             }
         }
@@ -214,16 +341,16 @@ public class MappingController {
 
         Result[] ress = currentUser.getResults().toArray(new Result[0]);
         Boolean flag = false;
-        for (Result r: ress
-             ) {
-            if (r.getTest().getId().equals(result.getTest().getId())){
+        for (Result r : ress
+                ) {
+            if (r.getTest().getId().equals(result.getTest().getId())) {
                 r.setPoints(result.getPoints());
                 flag = true;
             }
         }
         HashSet rrr = new HashSet(Arrays.asList(ress));
 
-        if (!flag){
+        if (!flag) {
             rrr.add(result);
         }
         currentUser.setResults(rrr);
@@ -235,8 +362,6 @@ public class MappingController {
         Iterable<Test> listTest = testRepo.findAll();
         for (Test item :
                 listTest) {
-            System.out.println(item.getId());
-            System.out.println(testID);
             if (item.getId().equals(testID)) {
                 test = item;
                 break;
