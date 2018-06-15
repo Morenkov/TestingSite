@@ -2,7 +2,5 @@
 <#import "parts/testRender.ftl" as t>
 
 <@c.page>
-<h3>Test editor</h3>
-    <@t.testRender "/makeTest/${test.id}" true />
+    <@t.testRender "/test/${test.id}" false />
 </@c.page>
-
