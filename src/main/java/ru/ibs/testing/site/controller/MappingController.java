@@ -11,6 +11,7 @@ import org.springframework.web.util.HtmlUtils;
 import ru.ibs.testing.site.dto.*;
 import ru.ibs.testing.site.repos.TestRepo;
 import ru.ibs.testing.site.repos.UserRepo;
+import ru.ibs.testing.site.service.UserSevice;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

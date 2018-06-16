@@ -23,9 +23,6 @@ public class UserSevice implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${hostname}")
-    private String hostname;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username);
