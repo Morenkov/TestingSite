@@ -1,11 +1,8 @@
 package ru.ibs.testing.site.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import javafx.beans.binding.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.TextEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +11,17 @@ import org.springframework.web.util.HtmlUtils;
 import ru.ibs.testing.site.dto.*;
 import ru.ibs.testing.site.repos.TestRepo;
 import ru.ibs.testing.site.repos.UserRepo;
-import ru.ibs.testing.site.service.UserSevice;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class MappingController {
@@ -85,7 +87,7 @@ public class MappingController {
         Boolean flag = false;
         currentUser = userRepo.findByUsername(currentUser.getUsername());
         if (!form.get("firstName").equals("")) {
-            user.setFirstName(form.get("firstName"));
+            user.setFirstName(HtmlUtils.htmlEscape(form.get("firstName")));
             flag = true;
         }
         if (!form.get("lastName").equals("")) {
@@ -97,7 +99,7 @@ public class MappingController {
             flag = true;
         }
         if (!form.get("password").equals("")) {
-            user.setPassword(passwordEncoder.encode(HtmlUtils.htmlEscape(form.get("password"))));
+            user.setPassword(passwordEncoder.encode(form.get("password")));
             flag = true;
         }
         if (!form.get("country").equals(user.getCountry())) {
@@ -164,11 +166,11 @@ public class MappingController {
     }
 
 
-    @GetMapping("/makeTest/{testID}/edit/{errors}/go")
+    @GetMapping("/makeTest/{testID}")
     public String userTests(
             @RequestParam(required = false) Integer q,
             @RequestParam(required = false) Integer a,
-            @PathVariable String errors,
+            @RequestParam(required = false, name = "errors") Boolean err,
             @PathVariable Long testID,
             @AuthenticationPrincipal User currentUser,
             Map<String, Object> model
@@ -181,8 +183,11 @@ public class MappingController {
         } else {
             test = getTestFromRepo(testID);
         }
-        if (!errors.equals("none")){
-            model.put("errors", errors);
+        if (err == null){
+            err = false;
+        }
+        if (err){
+        model.put("errors", err);
         }
         model.put("test", test);
         model.put("currentUser", currentUser);
@@ -190,10 +195,10 @@ public class MappingController {
     }
 
     @ExceptionHandler({TransactionSystemException.class})
-    @PostMapping("/makeTest/{testID}/edit/{errors}/go")
+    @PostMapping("/makeTest/{testID}")
     public String updateTests(
+            @RequestParam(required = false, name = "errors") Boolean err,
             @AuthenticationPrincipal User currentUser,
-            @PathVariable String errors,
             @PathVariable Long testID,
             @RequestParam Map<String, String> form
     ) {
@@ -242,27 +247,22 @@ public class MappingController {
             Validator validator = factory.getValidator();
 
             Set<ConstraintViolation<Test>> constraintViolations = validator.validate(test);
-            errors = "";
+            String errors = "";
             if (constraintViolations.size() > 0) {
                 System.out.println("Constraint Violations occurred..");
                 errors += "Constraint Violations occurred..\n";
-//                for (ConstraintViolation<Test> contraints : constraintViolations) {
-//                    System.out.println(contraints.getRootBeanClass().getSimpleName() +
-//                            "." + contraints.getPropertyPath() + " " + contraints.getMessage());
-//                    errors += contraints.getRootBeanClass().getSimpleName() +
-//                            "." + contraints.getPropertyPath() + " " + contraints.getMessage() + "\n";
-//                }
-//                if (errors.equals("")) {
-                    errors = "Empty_fields_or_too_long_text";
-//                }
-                test = null;
-                return "redirect:/makeTest/" + testID + "/edit/" + errors + "/go";
+                for (ConstraintViolation<Test> contraints : constraintViolations) {
+                    System.out.println(contraints.getRootBeanClass().getSimpleName() +
+                            "." + contraints.getPropertyPath() + " " + contraints.getMessage());
+                    errors += contraints.getRootBeanClass().getSimpleName() +
+                            "." + contraints.getPropertyPath() + " " + contraints.getMessage() + "\n";
+                }
+                return "redirect:/makeTest/" + testID + "?errors";
             } else {
                 testRepo.save(test);
             }
         }
-        return "redirect:/makeTest/" + testID + "/edit/none/go";
-
+        return "redirect:/main";
     }
 
     public static RedirectView safeRedirect(String url) {

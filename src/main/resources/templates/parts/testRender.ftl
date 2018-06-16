@@ -1,7 +1,7 @@
 <#macro testRender path isEditForm>
  <div class="form-group">
 
-     <div class="label"><#if errors!="none">${errors}</#if></div>
+     <div class="label"><#if errors??>Ошибка: возможно слишком длинное имя или пустота</#if></div>
 
      <form action="${path}" method="post" enctype="multipart/form-data">
 

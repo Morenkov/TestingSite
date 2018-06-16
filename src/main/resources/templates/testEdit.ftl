@@ -3,6 +3,6 @@
 
 <@c.page>
 <h3>Test editor</h3>
-    <@t.testRender "/makeTest/${test.id}/edit/none/go" true />
+    <@t.testRender "/makeTest/${test.id}" true />
 </@c.page>
 

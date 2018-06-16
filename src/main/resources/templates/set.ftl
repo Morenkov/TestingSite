@@ -1,7 +1,7 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-                 <form action="/makeTest/0/edit/none/go" method="get">
+                 <form action="/makeTest/0" method="get">
                      <span class="h3">Число вопросов</span>
                      <div class="input-group mb-3">
                          <select name="q" class="selectpicker mt-1">

@@ -22,7 +22,6 @@ public class User implements UserDetails {
     private String password;
     private boolean active;
 
-
     @NotBlank(message = "Имя не может отсутствовать")
     private String firstName;
     @NotBlank(message = "Фамилия не может отсутствовать")
@@ -48,7 +47,6 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-
 
     @Override
     public boolean equals(Object o) {
